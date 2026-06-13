@@ -168,6 +168,12 @@ function handleEvent(event, assistantEl) {
       break;
 
     case 'error':
+      if (event.message?.includes('No conversation found')) {
+        sessionStorage.removeItem('st-session-id');
+        sessionId = null;
+        location.reload();
+        return;
+      }
       appendToAssistant(assistantEl, `\n⚠ ${event.message}`);
       break;
 

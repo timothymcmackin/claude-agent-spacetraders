@@ -9,9 +9,29 @@ A Claude Code-powered chat UI for automating your [SpaceTraders.io](https://spac
 
 ## Setup
 
+You need two API keys — one for Anthropic, one for SpaceTraders.
+
+**Anthropic API key** — from [console.anthropic.com](https://console.anthropic.com).
+
+**SpaceTraders account token** — this authorizes agent registration:
+1. Go to [https://my.spacetraders.io](https://my.spacetraders.io) and sign in (or create a free account).
+2. Copy your **account token** from your account settings.
+
+Add both to `.env`:
+```
+ANTHROPIC_API_KEY=sk-ant-...
+SPACETRADERS_TOKEN=<your account token>
+```
+
+On first launch the app will show a registration form. Enter an agent name, click **Register Agent**, and the app will register the agent using your account token and save the returned agent token for the session.
+
+## Starting the app
+
+To start the app, add the Anthropic API key that the app will use to call the [Claude Code Agent SDK](https://code.claude.com/docs/en/agent-sdk/overview) to the `.env` file along with your SpaceTraders account token.
+Then, run the startup command:
+
 ```sh
-cp .env.example .env
-# Edit .env and fill in your ANTHROPIC_API_KEY
+docker compose up --build
 ```
 
 ## Commands
@@ -48,7 +68,6 @@ docker compose up
 
 Open **http://localhost:3000** in your browser.
 
-- If you have no account, fill in the registration form and click **Register Agent**
 - Use the quick-action buttons for common commands
 - Type anything in the input to give Claude a command
 - Claude will call SpaceTraders API tools directly for simple operations, and write/run Node.js scripts for complex automation
@@ -60,6 +79,21 @@ Open **http://localhost:3000** in your browser.
 | SpaceTraders token & agent info | `agent-data` Docker volume (`/data/config.json`) | Yes — survives restarts |
 | Scripts written by Claude | `agent-workspace` Docker volume (`/workspace/`) | Yes — survives restarts |
 | Conversation history | In-memory (`InMemorySessionStore`) | No — resets on restart |
+
+Both `agent-data` and `agent-workspace` are [Docker named volumes](https://docs.docker.com/storage/volumes/). They live inside Docker Desktop's Linux VM and are not directly accessible as folders on your Mac. To read or copy files out:
+
+```sh
+# List scripts Claude has written
+docker compose exec app ls /workspace/
+
+# Print a script
+docker compose exec app cat /workspace/mine-contract.js
+
+# Copy a file to your current directory
+docker compose cp app:/workspace/mine-contract.js .
+```
+
+Volumes persist across `docker compose down` / `docker compose up` cycles. They are only deleted when you pass the `-v` flag (`docker compose down -v`), which also wipes your saved SpaceTraders token and requires re-registration.
 
 ## Architecture
 

@@ -14,9 +14,7 @@ export async function getConfig() {
     const raw = await readFile(CONFIG_PATH, 'utf8');
     cachedConfig = JSON.parse(raw);
   } catch {
-    if (process.env.SPACETRADERS_TOKEN) {
-      cachedConfig = { token: process.env.SPACETRADERS_TOKEN };
-    }
+    cachedConfig = null;
   }
   return cachedConfig;
 }
@@ -37,10 +35,15 @@ async function request(path, options = {}) {
   if (wait > 0) await new Promise(r => setTimeout(r, wait));
   lastRequestTime = Date.now();
 
-  const config = await getConfig();
   const headers = { 'Content-Type': 'application/json' };
-  if (config?.token && path !== '/register') {
-    headers['Authorization'] = `Bearer ${config.token}`;
+  if (path === '/register') {
+    // Registration requires the account token (SPACETRADERS_TOKEN in .env)
+    if (process.env.SPACETRADERS_TOKEN) {
+      headers['Authorization'] = `Bearer ${process.env.SPACETRADERS_TOKEN}`;
+    }
+  } else {
+    const config = await getConfig();
+    if (config?.token) headers['Authorization'] = `Bearer ${config.token}`;
   }
 
   const res = await fetch(`${BASE_URL}${path}`, { ...options, headers });

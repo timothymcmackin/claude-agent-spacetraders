@@ -10,8 +10,7 @@ services:
       - agent-data:/data
     environment:
       - ANTHROPIC_API_KEY=${ANTHROPIC_API_KEY}
-      # Optional: seed a token without going through the registration UI
-      # - SPACETRADERS_TOKEN=${SPACETRADERS_TOKEN}
+      - SPACETRADERS_TOKEN=${SPACETRADERS_TOKEN}
 
 volumes:
   agent-data:
