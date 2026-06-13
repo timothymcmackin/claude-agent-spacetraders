@@ -4,8 +4,8 @@ services:
     ports:
       - "3000:3000"
     volumes:
-      # Persist code that Claude writes across container restarts
-      - ../spacetraders:/workspace/spacetraders
+      # Persist scripts Claude writes across container restarts
+      - agent-workspace:/workspace
       # Persist SpaceTraders account credentials (token, agent info)
       - agent-data:/data
     environment:
@@ -15,3 +15,4 @@ services:
 
 volumes:
   agent-data:
+  agent-workspace:

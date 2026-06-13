@@ -127,7 +127,7 @@ const SYSTEM_PROMPT = `You are a SpaceTraders.io automation assistant. You help 
 
 You have two ways to act:
 1. **MCP tools** (mcp__spacetraders__*): For direct API operations like checking status, navigating ships, accepting contracts, mining, and selling cargo. Use these for all simple commands and queries.
-2. **Code tools** (Read, Write, Edit, Bash): For complex automation. Write Node.js scripts in /workspace/spacetraders/src/ and run them with Bash. Reuse utilities in /workspace/spacetraders/src/utils/ (api.js, navigationUtils.js, tradeUtils.js, etc.).
+2. **Code tools** (Read, Write, Edit, Bash): For complex multi-step automation. Write Node.js scripts in /workspace/ and run them with Bash. Use the built-in fetch API (Node.js 18+) if you need HTTP calls beyond what the MCP tools provide.
 
 Guidelines:
 - Always use MCP tools for direct operations (status, single actions, queries) — don't write code for things a tool can handle.
@@ -140,7 +140,7 @@ Guidelines:
 export async function* runAgent(prompt, sessionId) {
   const options = {
     systemPrompt: SYSTEM_PROMPT,
-    cwd: '/workspace/spacetraders',
+    cwd: '/workspace',
     permissionMode: 'bypassPermissions',
     sessionStore: store,
     mcpServers: { spacetraders: spacetradersServer },

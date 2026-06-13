@@ -6,7 +6,6 @@ A Claude Code-powered chat UI for automating your [SpaceTraders.io](https://spac
 
 - [Docker Desktop](https://www.docker.com/products/docker-desktop/)
 - An [Anthropic API key](https://console.anthropic.com/)
-- The `spacetraders` repo checked out at `../spacetraders` (one level up from this repo)
 
 ## Setup
 
@@ -59,7 +58,7 @@ Open **http://localhost:3000** in your browser.
 | What | Where | Persists? |
 |------|-------|-----------|
 | SpaceTraders token & agent info | `agent-data` Docker volume (`/data/config.json`) | Yes — survives restarts |
-| Code written by Claude | `../spacetraders/` bind mount | Yes — lives on your host |
+| Scripts written by Claude | `agent-workspace` Docker volume (`/workspace/`) | Yes — survives restarts |
 | Conversation history | In-memory (`InMemorySessionStore`) | No — resets on restart |
 
 ## Architecture
