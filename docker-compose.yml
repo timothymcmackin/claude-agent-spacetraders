@@ -1,0 +1,17 @@
+services:
+  app:
+    build: .
+    ports:
+      - "3000:3000"
+    volumes:
+      # Persist code that Claude writes across container restarts
+      - ../spacetraders:/workspace/spacetraders
+      # Persist SpaceTraders account credentials (token, agent info)
+      - agent-data:/data
+    environment:
+      - ANTHROPIC_API_KEY=${ANTHROPIC_API_KEY}
+      # Optional: seed a token without going through the registration UI
+      # - SPACETRADERS_TOKEN=${SPACETRADERS_TOKEN}
+
+volumes:
+  agent-data:
