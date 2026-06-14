@@ -77,23 +77,12 @@ Open **http://localhost:3000** in your browser.
 | What | Where | Persists? |
 |------|-------|-----------|
 | SpaceTraders token & agent info | `agent-data` Docker volume (`/data/config.json`) | Yes — survives restarts |
-| Scripts written by Claude | `agent-workspace` Docker volume (`/workspace/`) | Yes — survives restarts |
+| Scripts written by Claude | `./workspace/` (local folder in this repo) | Yes — browse in Finder or any editor |
 | Conversation history | In-memory (`InMemorySessionStore`) | No — resets on restart |
 
-Both `agent-data` and `agent-workspace` are [Docker named volumes](https://docs.docker.com/storage/volumes/). They live inside Docker Desktop's Linux VM and are not directly accessible as folders on your Mac. To read or copy files out:
+Scripts in `./workspace/` are stored directly on your Mac — open them in any editor or Finder even when the container is stopped. They persist across `docker compose down` / `docker compose up` cycles and are only lost if you manually delete the folder.
 
-```sh
-# List scripts Claude has written
-docker compose exec app ls /workspace/
-
-# Print a script
-docker compose exec app cat /workspace/mine-contract.js
-
-# Copy a file to your current directory
-docker compose cp app:/workspace/mine-contract.js .
-```
-
-Volumes persist across `docker compose down` / `docker compose up` cycles. They are only deleted when you pass the `-v` flag (`docker compose down -v`), which also wipes your saved SpaceTraders token and requires re-registration.
+The `agent-data` volume (SpaceTraders token) is still a Docker named volume and is only deleted with `docker compose down -v`, which also requires re-registration.
 
 ## Architecture
 
